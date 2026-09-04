@@ -6,7 +6,7 @@
 | 持っているもの | 場所 | 何か |
 |---|---|---|
 | **製品設計の正本** | `docs/260407-keyboard-ergonomic-split-fido2-design.md`（414 行）+ `CLAUDE.md` | 機構図・USB トポロジ・BOM・原価・SKU・認証（PSE / FCC Part 15 / CE / FIDO Alliance L1）・製造工程・損益分岐点 |
-| **appview 1 本** | `appview/etzhayyim-wasm-keyboard-kb0ard1x/` | SvelteKit + `@sveltejs/adapter-cloudflare` の Worker。静的 1 ページ + `/xrpc/*` を MCP router へ中継するだけの薄い BFF |
+| **appview 1 本** | `appview/etzhayyim-wasm-keyboard-kb0ard1x/` + `web/` | Cloudflare Worker（`src/app.ts` — 静的 1 ページ + `/xrpc/*` を MCP router へ中継する薄い BFF）。UI は 2026-09-04 に SvelteKit から **shadow-cljs + reagent + kotoba-ui** へ移植（murakumo-studio構成）。`npx shadow-cljs compile app` → Build completed, 0 errors |
 
 **QMK/VIA/ZMK のキーマップも、CAD も、firmware source もこの repo には無い**
 （`git ls-files` は 14 件で、うち実装は appview の 8 ファイルだけ）。
@@ -32,18 +32,19 @@ origin（他者の仕様のミラー）でも role（`app-` / `loop-` 等）で�
 かつ org 自体が etzhayyim → cloud-itonami へ動いている。改名は west pin と
 GitHub redirect を伴うので、この repo 単独の判断で動かさない。
 
-## 検証済みの状態（2026-08-14 に実際に走らせた）
+## 検証済みの状態（2026-08-14 に実際に走らせた；2026-09-04 の svelte→cljs 移植で更新）
 
 | 何を | 結果 |
 |---|---|
-| `npm install`（appview/svelte） | ✅ 92 packages / 10 秒（node v26.3.0 / npm 11.16.0） |
-| `npm run build` | ✅ client 781ms + server 6.04s、`.svelte-kit/cloudflare/_worker.js` を出力 |
-| `npm run check`（svelte-check） | ✅ **142 files / 0 errors / 0 warnings** |
-| `wrangler deploy --dry-run` | ✅ 約 422.7 KiB / gzip 94.77 KiB、bindings 10 件を解決 |
-| `wrangler dev` で `GET /` | ✅ HTTP 200 / 2321 bytes |
-| `wrangler dev` で `GET /nope` | ✅ HTTP 404 |
-| `wrangler dev` で `POST /xrpc/<nsid>` | ❌ **HTTP 500** — 下記 |
-| 同上、上流を stub router に差し替え | ✅ **HTTP 200** — 中継の実装自体は正しい |
+| `npx shadow-cljs compile app`（新 UI、2026-09-04） | ✅ **Build completed (95 files, 44 compiled, 0 warnings, 116.95s)** — 0 errors |
+| ローカル http server で `GET /index.html` / `js/main.js` / `vendor/kotoba-ui.css` | ✅ すべて HTTP 200；main.js は移植後 UI（kbd-app / Public Routes / Runtime Bindings）を含む |
+| ~~`npm install`（appview/svelte）~~ | 削除済み — SvelteKit shell は svelte→cljs 移植で `git rm` した |
+| ~~`npm run build` / `npm run check`~~ | 削除済み — 同上（以下の表は移行前の監査記録として保持） |
+| `wrangler deploy --dry-run`（移行前の実測） | ✅ 約 422.7 KiB / gzip 94.77 KiB、bindings 10 件を解決 |
+| `wrangler dev` で `GET /`（移行前の実測） | ✅ HTTP 200 / 2321 bytes |
+| `wrangler dev` で `GET /nope`（移行前の実測） | ✅ HTTP 404 |
+| `wrangler dev` で `POST /xrpc/<nsid>`（移行前の実測） | ❌ **HTTP 500** — 下記 |
+| 同上、上流を stub router に差し替え（移行前の実測） | ✅ **HTTP 200** — 中継の実装自体は正しい |
 | `https://keyboard.etzhayyim.com` | ❌ **DNS が解決しない** |
 | `https://kb0ard1x.etzhayyim.com` | ❌ **DNS が解決しない** |
 
@@ -61,8 +62,11 @@ dig +short mcp.etzhayyim.com    → (空)
 dig +short kb0ard1x.etzhayyim.com → (空)
 ```
 
-上流が存在しないので `fetch` が投げ、handler に catch が無いため SvelteKit の
-`{"message":"Internal Error"}` / HTTP 500 になる（ローカルで再現済み）。
+上流が存在しないので `fetch` が投げ、handler に catch が無いため
+`{"message":"Internal Error"}` / HTTP 500 になる（svelte→cljs 移植前の 2026-08-14 に
+ローカルで再現済み。この xrpc 中継は SvelteKit `+server.ts` に在ったが、移植時に
+Worker 側 `src/app.ts` の `proxyToDispatcher` と同型の実装であることが確認済みで、
+`wrangler.jsonc` は現在 `main: ./src/app.ts` を配備する）。
 **中継の実装自体は正しい** —— 到達可能な stub router を `--var` で指すと
 同じ POST が HTTP 200 を返し、nsid が tool 名として、body が arguments として
 渡ることを確認した（手順は quickstart §4）。壊れているのは上流だけ。
