@@ -1,9 +1,27 @@
 # operator quickstart — keyboard (appview `kb0ard1x`)
 
+> **Updated 2026-09-04 (svelte→cljs migration):** the SvelteKit app was removed.
+> The UI is now shadow-cljs + reagent + kotoba-ui (murakumo-studio構成), built
+> from the repository root:
+>
+> ```bash
+> npm install
+> npx shadow-cljs compile app
+> ```
+>
+> ```
+> [:app] Build completed. (95 files, 44 compiled, 0 warnings, 116.95s)
+> ```
+>
+> The build emits `web/dist/js/main.js` + `web/dist/vendor/kotoba-ui.css`, which
+> `wrangler.jsonc` serves as static assets (`assets.directory: ../../web/dist`).
+> The sections below describe the pre-migration SvelteKit procedure and are kept
+> as the audit record.
+
 この手順は 2026-08-14 に**実際に踏んで**書いた。踏めなかったものは
 「踏めない」と書いてある（§5）。
 
-対象は `appview/etzhayyim-wasm-keyboard-kb0ard1x/` の SvelteKit Worker だけ。
+対象は `appview/etzhayyim-wasm-keyboard-kb0ard1x/` の Worker だけ。
 この repo の残りは設計文書で、実行するものが無い。
 
 ## 0. 前提
