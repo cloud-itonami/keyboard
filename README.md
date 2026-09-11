@@ -6,7 +6,7 @@
 | 持っているもの | 場所 | 何か |
 |---|---|---|
 | **製品設計の正本** | `docs/260407-keyboard-ergonomic-split-fido2-design.md`（414 行）+ `CLAUDE.md` | 機構図・USB トポロジ・BOM・原価・SKU・認証（PSE / FCC Part 15 / CE / FIDO Alliance L1）・製造工程・損益分岐点 |
-| **appview 1 本** | `appview/etzhayyim-wasm-keyboard-kb0ard1x/` + `web/` | Cloudflare Worker（`src/app.ts` — 静的 1 ページ + `/xrpc/*` を MCP router へ中継する薄い BFF）。UI は 2026-09-04 に SvelteKit から **shadow-cljs + reagent + kotoba-ui** へ移植（murakumo-studio構成）。`npx shadow-cljs compile app` → Build completed, 0 errors |
+| **appview 1 本** | `appview/etzhayyim-wasm-keyboard-kb0ard1x/` + `web/` | Cloudflare Worker（`src/app.ts` — 静的 1 ページ + `/xrpc/*` を MCP router へ中継する薄い BFF）。UI は 2026-09-04 に SvelteKit から **shadow-cljs + reagent + kotoba-ui** へ移植（murakumo-studio構成）。`amu compile --target wasm32-browser app` → Build completed, 0 errors |
 
 **QMK/VIA/ZMK のキーマップも、CAD も、firmware source もこの repo には無い**
 （`git ls-files` は 14 件で、うち実装は appview の 8 ファイルだけ）。
@@ -36,7 +36,7 @@ GitHub redirect を伴うので、この repo 単独の判断で動かさない�
 
 | 何を | 結果 |
 |---|---|
-| `npx shadow-cljs compile app`（新 UI、2026-09-04） | ✅ **Build completed (95 files, 44 compiled, 0 warnings, 116.95s)** — 0 errors |
+| `amu compile --target wasm32-browser app`（新 UI、2026-09-04） | ✅ **Build completed (95 files, 44 compiled, 0 warnings, 116.95s)** — 0 errors |
 | ローカル http server で `GET /index.html` / `js/main.js` / `vendor/kotoba-ui.css` | ✅ すべて HTTP 200；main.js は移植後 UI（kbd-app / Public Routes / Runtime Bindings）を含む |
 | ~~`npm install`（appview/svelte）~~ | 削除済み — SvelteKit shell は svelte→cljs 移植で `git rm` した |
 | ~~`npm run build` / `npm run check`~~ | 削除済み — 同上（以下の表は移行前の監査記録として保持） |
