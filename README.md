@@ -5,7 +5,7 @@
 
 | 持っているもの | 場所 | 何か |
 |---|---|---|
-| **製品設計の正本** | `docs/260407-keyboard-ergonomic-split-fido2-design.md`（414 行）+ `CLAUDE.md` | 機構図・USB トポロジ・BOM・原価・SKU・認証（PSE / FCC Part 15 / CE / FIDO Alliance L1）・製造工程・損益分岐点 |
+| **製品設計の正本** | `docs/260407-keyboard-ergonomic-split-fido2-design.md`（414 行）+ `AGENTS.md` | 機構図・USB トポロジ・BOM・原価・SKU・認証（PSE / FCC Part 15 / CE / FIDO Alliance L1）・製造工程・損益分岐点 |
 | **appview 1 本** | `appview/etzhayyim-wasm-keyboard-kb0ard1x/` + `web/` | Cloudflare Worker（`src/app.ts` — 静的 1 ページ + `/xrpc/*` を MCP router へ中継する薄い BFF）。UI は 2026-09-04 に SvelteKit から **shadow-cljs + reagent + kotoba-ui** へ移植（murakumo-studio構成）。`amu compile --target wasm32-browser app` → Build completed, 0 errors |
 
 **QMK/VIA/ZMK のキーマップも、CAD も、firmware source もこの repo には無い**
@@ -26,9 +26,9 @@ origin（他者の仕様のミラー）でも role（`app-` / `loop-` 等）で�
 | west path（実際の所在） | `cloud-itonami/keyboard` |
 | `README.edn` | `com-etzhayyim-app-keyboard` / `:kind :app` |
 | `migration.edn` | destination `etzhayyim/com-etzhayyim-app-keyboard` |
-| `kotodama.jsonld` / `CLAUDE.md` | `did:web:keyboard.etzhayyim.com` |
+| `kotodama.jsonld` / `AGENTS.md` | `did:web:keyboard.etzhayyim.com` |
 
-`com-etzhayyim-*` は CLAUDE.md が「org を 2 回言っている」と名指しした旧形式で、
+`com-etzhayyim-*` は AGENTS.md が「org を 2 回言っている」と名指しした旧形式で、
 かつ org 自体が etzhayyim → cloud-itonami へ動いている。改名は west pin と
 GitHub redirect を伴うので、この repo 単独の判断で動かさない。
 
@@ -84,7 +84,7 @@ Worker 側 `src/app.ts` の `proxyToDispatcher` と同型の実装であるこ�
 
 ## この repo を読む順番
 
-1. `CLAUDE.md` — 製品コンセプト・SKU・BOM 概要・actor 構成・競合比較（163 行）
+1. `AGENTS.md` — 製品コンセプト・SKU・BOM 概要・actor 構成・競合比較（163 行）
 2. `docs/260407-keyboard-ergonomic-split-fido2-design.md` — 上の全項目の詳細（414 行）
 3. `docs/operator-quickstart.md` — appview を手元で動かす手順
 4. `appview/.../kotodama.jsonld` — actor の宣言（capability / KPI / governance / derive）

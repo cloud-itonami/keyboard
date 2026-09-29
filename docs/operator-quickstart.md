@@ -63,7 +63,7 @@ added 92 packages, and audited 93 packages in 10s
 
 ## 2. ビルド
 
-**このワークスペースでは `vite build` を直接起動しない**（CLAUDE.md の
+**このワークスペースでは `vite build` を直接起動しない**（AGENTS.md の
 repo-wide resource governor。高負荷 build は同時 1 本に制限する）:
 
 ```bash
@@ -222,7 +222,7 @@ refused）。`--var` を渡したこと自体は救いにならない —— 到
 
 ## 5. この repo からは踏めないこと
 
-- **本番 URL の確認。** `CLAUDE.md` は `https://keyboard.etzhayyim.com` を、
+- **本番 URL の確認。** `AGENTS.md` は `https://keyboard.etzhayyim.com` を、
   `wrangler.jsonc` の `routes` は `kb0ard1x.etzhayyim.com/*` を指すが、
   **どちらも DNS が解決しない**（ゾーン `etzhayyim.com` 自体は Cloudflare に在る）。
   つまりこの appview は**まだデプロイされていない**。
